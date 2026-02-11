@@ -1,0 +1,96 @@
+[data]
+    name = "GEFCom_2014"
+    source = "wind"
+    task = 15
+    num_scenarios = 100
+    pl_seed = 42
+    normalization = "std_scale"
+    quaternion_mode = "reshape" # "reshape" | "organize" | "timestack"
+    url = "https://ars.els-cdn.com/content/image/1-s2.0-S0169207016000133-mmc1.zip"
+    [data.max_num_workers]
+        windows = 0
+        linux = 4
+    [data.solar]
+        diff_acc = true
+        past_read_p = 10
+        vars = ["VAR78", "VAR79", "VAR134", "VAR157", "VAR164", "VAR165", 
+                           "VAR166", "VAR167", "VAR169", "VAR175", "VAR178", "VAR228"]
+        base_feats = ["VAR134", "VAR157", "VAR165", 
+                                "VAR166", "VAR167", "VAR169"]
+        less_feats = false
+        acc_fields = ["VAR169", "VAR175", "VAR178", "VAR228"]
+        acc_r_fields = ["VAR228"]
+    [data.wind]
+        vars = ["U10", "V10", "U100", "V100"]
+        preprocess = true
+        less_feats = false
+        keep_original = true
+        zones = "W_Zone1_10"
+
+[model]
+    default = "qvae"
+    [model.vae]
+        latent_space = 20
+        learning_rate = 1e-3
+        weight_decay = 0
+    [model.rvae]
+        latent_space = 20
+        learning_rate = 1e-3
+        weight_decay = 0
+        loss_std = 0.5
+        beta = 0.04
+    [model.qvae]
+        latent_space = 20
+        learning_rate = 1e-3
+        weight_decay = 0
+    [model.rqvae]
+        latent_space = 20
+        learning_rate = 1e-3
+        weight_decay = 0
+        loss_std = 0.5
+        beta = 0.04
+    [model.gan]
+        latent_space = 64
+        learning_rate = 2e-4
+        weight_decay = 0
+    [model.qgan]
+        latent_space = 64
+        learning_rate = 2e-4
+        weight_decay = 0
+    [model.rnn]
+        num_gru_layers = 3
+        hidden_size = 200
+        dropout_prob = 0.2
+        learning_rate = 1e-3
+        weight_decay = 0
+    [model.qrnn]
+        num_gru_layers = 3
+        hidden_size = 200
+        dropout_prob = 0.005
+        learning_rate = 1e-3
+        weight_decay = 0
+
+[train]
+    epochs = 400
+    batch_size = 256 # Set <= 128 for solar dataset
+    plot_period = 1
+    print_period = 1
+    top_k_save = 10
+    matmul_precision = "high" # "medium" | "high" | "highest"
+    [train.checkpoint]
+        period = 1
+        method = "best"
+        monitor = "val_loss"
+
+[test]
+    debug_mode = false
+    des_metric = "mae"
+
+[path]
+    src_folder = "src"
+    data_folder = "data"
+    models_folder = "models"
+    scenarios_folder = "scenarios"
+    normalizer_folder = "normalizer"
+    checkpoints_folder = "checkpoints"
+    results_folder = "results"

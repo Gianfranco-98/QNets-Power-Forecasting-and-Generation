@@ -1,0 +1,13 @@
+# Ignore secret files
+.secrets.*
+
+# Ignore automatically generated files
+*.egg-info
+*__pycache__
+
+# Ignore folder contents (empty folders are kept with per-folder .gitignores)
+checkpoints/*
+data/*
+lightning_logs/*
+normalizer/*
+results/*
